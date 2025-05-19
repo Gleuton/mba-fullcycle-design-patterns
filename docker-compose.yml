@@ -1,0 +1,30 @@
+services:
+  mba-patters-app:
+    build: ./.docker
+    ports:
+      - "8908:80"
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - mba-patters-postgres
+    networks:
+      - development-network
+
+  mba-patters-postgres:
+    image: postgres:16
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "fiap"
+      POSTGRES_USER: "developer"
+      POSTGRES_PASSWORD: "developer"
+    ports:
+      - "54321:5432"
+    networks:
+      - development-network
+
+networks:
+  development-network:
+
+volumes:
+  pgdata:
