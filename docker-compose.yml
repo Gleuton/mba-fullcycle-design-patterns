@@ -11,11 +11,11 @@ services:
       - development-network
 
   mba-patters-postgres:
-    image: postgres:16
+    image: postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: "fiap"
+      POSTGRES_DB: "fullcycle"
       POSTGRES_USER: "developer"
       POSTGRES_PASSWORD: "developer"
     ports:

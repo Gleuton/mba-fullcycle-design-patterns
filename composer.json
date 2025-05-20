@@ -1,5 +1,5 @@
 {
-    "name": "fullcycle_mba_design_patters",
+    "name": "gleuton/fullcycle-mba-design-patters",
     "description": "Projeto didático da matéria de design patters do curso MBA FullCycle",
     "type": "project",
     "config": {
@@ -10,7 +10,7 @@
             "laminas/laminas-component-installer": true
         },
         "platform": {
-            "php": "8.1.99"
+            "php": "8.4.7"
         }
     },
     "extra": {
@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4",
+        "php": "^8.4",
         "composer/package-versions-deprecated": "^1.11.99.5",
         "doctrine/annotations": "^2.0",
         "doctrine/dbal": "^4.2",
@@ -38,6 +38,7 @@
         "mezzio/mezzio": "^3.20.1",
         "mezzio/mezzio-fastroute": "^3.11.0",
         "mezzio/mezzio-helpers": "^5.17",
+        "ramsey/uuid": "^4.7",
         "symfony/cache": "^6.4",
         "vlucas/phpdotenv": "^5.6"
     },
