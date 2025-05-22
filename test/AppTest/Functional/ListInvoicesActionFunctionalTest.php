@@ -9,27 +9,26 @@ use App\Entity\Payment;
 use App\GenerateInvoices;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class ListInvoicesActionFunctionalTest extends TestCase
 {
-    private EntityManager $entityManager;
-    private ContractRepository $contractRepository;
-    private GenerateInvoices $generateInvoices;
     private ListInvoicesAction $action;
     
     protected function setUp(): void
     {
-        $this->entityManager = $this->createMock(EntityManager::class);
-        $this->contractRepository = new ContractRepository($this->entityManager);
-        $this->generateInvoices = new GenerateInvoices($this->contractRepository);
-        $this->action = new ListInvoicesAction($this->generateInvoices);
+        $entityManager = $this->createMock(EntityManager::class);
+        $contractRepository = new ContractRepository($entityManager);
+        $generateInvoices = new GenerateInvoices($contractRepository);
+        $this->action = new ListInvoicesAction($generateInvoices);
         
-        $doctrineRepository = $this->createMock(\Doctrine\ORM\EntityRepository::class);
-        $this->entityManager
+        $doctrineRepository = $this->createMock(EntityRepository::class);
+        $entityManager
             ->method('getRepository')
             ->willReturn($doctrineRepository);
             
@@ -69,10 +68,13 @@ class ListInvoicesActionFunctionalTest extends TestCase
             '/invoices',
             'GET'
         );
-        
+        $request = $request->withAttribute('month', 3);
+        $request = $request->withAttribute('year', 2023);
+        $request = $request->withAttribute('type', 'cash');
+
         $response = $this->action->process(
             $request,
-            $this->createMock(\Psr\Http\Server\RequestHandlerInterface::class)
+            $this->createMock(RequestHandlerInterface::class)
         );
         
         $this->assertEquals(200, $response->getStatusCode());

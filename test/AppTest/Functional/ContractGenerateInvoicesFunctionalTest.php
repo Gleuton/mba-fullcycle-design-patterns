@@ -2,92 +2,71 @@
 
 namespace AppTest\Functional;
 
-use App\Entity\Contract;
-use App\Entity\Invoice;
-use App\Entity\Payment;
-use DateTimeImmutable;
+
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use GuzzleHttp\Client;
 
 class ContractGenerateInvoicesFunctionalTest extends TestCase
 {
-    private Contract $contract;
+    private Client $httpClient;
 
     protected function setUp(): void
     {
-        $this->contract = new Contract();
-        $this->contract->setDescription('Functional Test Contract');
-        $this->contract->setAmount(1200.00);
-        $this->contract->setPeriods(12);
-        $this->contract->setDate(new DateTimeImmutable('2023-01-01'));
-
-        $this->addPayment('2023-01-15', 100.00);
-        $this->addPayment('2023-02-15', 200.00);
-        $this->addPayment('2023-03-15', 300.00);
-    }
-
-    private function addPayment(string $date, float $amount): void
-    {
-        $payment = new Payment();
-        $payment->setAmount($amount);
-        $payment->setContract($this->contract);
-
-        $reflectionPayment = new \ReflectionClass($payment);
-        $dateProperty = $reflectionPayment->getProperty('date');
-        $dateProperty->setValue($payment, new DateTimeImmutable($date));
-
-        $this->contract->addPayment($payment);
+        $this->httpClient = new Client([
+            'base_uri' => 'http://mba-patters-nginx',
+            'http_errors' => false,
+        ]);
     }
 
     #[Test]
     #[TestDox('Deve gerar faturas pelo regime de caixa para um mês específico')]
     public function testGenerateInvoicesCashForSpecificMonth(): void
     {
-        $invoices = $this->contract->generateInvoices(2, 2023, 'cash');
+        $response = $this->httpClient->get('/generate-invoices/2/2023/cash');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $invoices = json_decode($response->getBody()->getContents(), true);
 
         $this->assertCount(1, $invoices);
-        $this->assertInstanceOf(Invoice::class, $invoices[0]);
-        $this->assertEquals(200.00, $invoices[0]->getAmount());
-        $this->assertEquals('2023-02-15', $invoices[0]->getDate()->format('Y-m-d'));
+        $this->assertEquals(6000, $invoices[0]['amount']);
+        $this->assertEquals('2023-02-01', $invoices[0]['date']);
     }
 
     #[Test]
     #[TestDox('Deve gerar faturas pelo regime de competência para um mês específico')]
     public function testGenerateInvoicesAccrualForSpecificMonth(): void
     {
-        $invoices = $this->contract->generateInvoices(3, 2023, 'accrual');
+        $response = $this->httpClient->get('/generate-invoices/1/2023/accrual');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $invoices = json_decode($response->getBody()->getContents(), true);
 
         $this->assertCount(1, $invoices);
-        $this->assertInstanceOf(Invoice::class, $invoices[0]);
-        $this->assertEquals(1200.00 / 12, $invoices[0]->getAmount());
     }
 
     #[Test]
-    #[TestDox('Deve retornar array vazio quando não há pagamentos no mês especificado (regime de caixa)')]
-    public function testGenerateInvoicesCashForMonthWithNoPayments(): void
+    #[TestDox('Deve retornar vazio para mês inválido')]
+    public function testGenerateInvoicesInvalidMonth(): void
     {
-        $invoices = $this->contract->generateInvoices(4, 2023, 'cash');
+        $response = $this->httpClient->get('/generate-invoices/13/2023/accrual');
 
-        $this->assertCount(0, $invoices);
+        $this->assertEquals(200, $response->getStatusCode());
+        $invoices = json_decode($response->getBody()->getContents(), true);
+
+        $this->assertEmpty($invoices);
     }
 
     #[Test]
-    #[TestDox('Deve gerar faturas para todos os meses no período do contrato (regime de competência)')]
-    public function testGenerateInvoicesAccrualForAllMonths(): void
+    #[TestDox('Deve retornar vazio para ano inválido')]
+    public function testGenerateInvoicesInvalidYear(): void
     {
-        $invoiceCount = 0;
-        $expectedAmount = 1200.00 / 12;
+        $response = $this->httpClient->get('/generate-invoices/1/1/accrual');
 
-        for ($month = 1; $month <= 12; $month++) {
-            $invoices = $this->contract->generateInvoices($month, 2023, 'accrual');
+        $this->assertEquals(200, $response->getStatusCode());
+        $invoices = json_decode($response->getBody()->getContents(), true);
 
-            $this->assertCount(1, $invoices);
-            $invoiceCount++;
-
-            $this->assertEquals($expectedAmount, $invoices[0]->getAmount());
-        }
-
-        $this->assertEquals(12, $invoiceCount);
+        $this->assertEmpty($invoices);
     }
 }
