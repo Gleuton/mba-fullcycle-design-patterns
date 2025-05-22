@@ -21,11 +21,13 @@ readonly class ListInvoicesAction implements MiddlewareInterface
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $input = $request->getParsedBody();
-        $mouth = 3;
-        $year = 2023;
-        $type = 'accrual';
-        $contracts = $this->generateInvoices->generateInvoice($mouth, $year, $type);
+        $input = $request->getAttributes();
+
+        $contracts = $this->generateInvoices->generateInvoice(
+            (int) $input['month'],
+            (int) $input['year'],
+            $input['type']
+        );
 
         return new JsonResponse($contracts);
     }

@@ -1,8 +1,21 @@
 services:
-  mba-patters-app:
-    build: ./.docker
+  mba-patters-nginx:
+    image: nginx:alpine
+    restart: always
     ports:
       - "8908:80"
+    volumes:
+      - ./:/var/www
+      - ./.docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - mba-patters-php
+    networks:
+      - development-network
+
+  mba-patters-php:
+    build: ./.docker
+    ports:
+      - "9000:9000"
     volumes:
       - ./:/var/www
     depends_on:

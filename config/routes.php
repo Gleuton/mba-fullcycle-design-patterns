@@ -8,5 +8,5 @@ use Mezzio\MiddlewareFactory;
 use Psr\Container\ContainerInterface;
 
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
-    $app->get('/', ListInvoicesAction::class, 'list-contracts');
+    $app->get('/generate-invoices/{month}/{year}/{type}', ListInvoicesAction::class, 'generate-invoices');
 };
