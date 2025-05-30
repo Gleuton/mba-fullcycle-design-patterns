@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Collection;
 
-use App\Entity\Contract;
+use App\Domain\Contract;
 use Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
 
-class ContractCollection extends ArrayCollection implements ContractCollectionInterface
+class ContractCollection extends ArrayCollection
 {
     public function __construct(array $contracts = [])
     {
@@ -35,7 +35,7 @@ class ContractCollection extends ArrayCollection implements ContractCollectionIn
     {
         $result = [];
         foreach ($this as $contract) {
-            $result[] = $contract->toArray();
+            $result[] = $contract;
         }
         return $result;
     }

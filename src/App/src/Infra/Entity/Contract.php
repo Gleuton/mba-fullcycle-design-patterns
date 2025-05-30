@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -88,46 +87,6 @@ class Contract
     public function setPeriods(int $periods): void
     {
         $this->periods = $periods;
-    }
-
-    /**
-     * @param DateTimeInterface $date
-     */
-    public function setDate(DateTimeInterface $date): void
-    {
-        $this->date = $date;
-    }
-
-    public function generateInvoices(int $month, int $year, string $type): array
-    {
-        $invoices = [];
-        if ($type === 'cash') {
-            /**
-             * @var Payment $payment
-             */
-            foreach ($this->payments as $payment) {
-                if ((int)$payment->getDate()->format('n') === $month && (int)$payment->getDate()->format('Y') === $year) {
-                    $invoices[] = new Invoice($payment->getDate(), $payment->getAmount());
-                }
-            }
-        }
-
-        if ($type === 'accrual') {
-            $startDate = new DateTimeImmutable($this->getDate());
-
-            for ($period = 0; $period <= $this->periods; $period++) {
-                $currentDate = $startDate->add(new DateInterval("P{$period}M"));
-                $currentMonth = (int)$currentDate->format('n');
-                $currentYear = (int)$currentDate->format('Y');
-
-                if ($currentMonth === $month && $currentYear === $year) {
-                    $amount = $this->getAmount() / $this->periods;
-                    $invoices[] = new Invoice($currentDate, $amount);
-                }
-            }
-        }
-
-        return $invoices;
     }
 
     public function addPayment(Payment $payment): self
