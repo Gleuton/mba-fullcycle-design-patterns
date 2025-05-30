@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Action;
 
-use App\GenerateInvoices;
-use Laminas\Diactoros\Response\JsonResponse;
+use App\Application\UseCase\GenerateInvoices;
+use App\Infra\Presenter\JsonPresenter;
 use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,14 +21,13 @@ readonly class ListInvoicesAction implements MiddlewareInterface
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $input = $request->getAttributes();
+        $input = $request->getParsedBody();
 
-        $contracts = $this->generateInvoices->generateInvoice(
+        return $this->generateInvoices->generateInvoice(
             (int) $input['month'],
             (int) $input['year'],
-            $input['type']
+            $input['type'],
+            new JsonPresenter()
         );
-
-        return new JsonResponse($contracts);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace AppTest\Functional;
 
-
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
@@ -17,6 +16,9 @@ class ContractGenerateInvoicesFunctionalTest extends TestCase
         $this->httpClient = new Client([
             'base_uri' => 'http://mba-patters-nginx',
             'http_errors' => false,
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
         ]);
     }
 
@@ -24,7 +26,13 @@ class ContractGenerateInvoicesFunctionalTest extends TestCase
     #[TestDox('Deve gerar faturas pelo regime de caixa para um mês específico')]
     public function testGenerateInvoicesCashForSpecificMonth(): void
     {
-        $response = $this->httpClient->get('/generate-invoices/2/2023/cash');
+        $response = $this->httpClient->post('/generate-invoices', [
+            'json' => [
+                'month' => 2,
+                'year' => 2023,
+                'type' => 'cash',
+            ],
+        ]);
 
         $this->assertEquals(200, $response->getStatusCode());
         $invoices = json_decode($response->getBody()->getContents(), true);
@@ -38,7 +46,13 @@ class ContractGenerateInvoicesFunctionalTest extends TestCase
     #[TestDox('Deve gerar faturas pelo regime de competência para um mês específico')]
     public function testGenerateInvoicesAccrualForSpecificMonth(): void
     {
-        $response = $this->httpClient->get('/generate-invoices/1/2023/accrual');
+        $response = $this->httpClient->post('/generate-invoices',[
+            'json' => [
+                'month' => 1,
+                'year' => 2023,
+                'type' => 'accrual',
+            ],
+        ]);
 
         $this->assertEquals(200, $response->getStatusCode());
         $invoices = json_decode($response->getBody()->getContents(), true);
@@ -50,7 +64,13 @@ class ContractGenerateInvoicesFunctionalTest extends TestCase
     #[TestDox('Deve retornar vazio para mês inválido')]
     public function testGenerateInvoicesInvalidMonth(): void
     {
-        $response = $this->httpClient->get('/generate-invoices/13/2023/accrual');
+        $response = $this->httpClient->post('/generate-invoices',[
+            'json' => [
+                'month' => 13,
+                'year' => 2023,
+                'type' => 'accrual',
+            ],
+        ]);
 
         $this->assertEquals(200, $response->getStatusCode());
         $invoices = json_decode($response->getBody()->getContents(), true);
@@ -62,7 +82,13 @@ class ContractGenerateInvoicesFunctionalTest extends TestCase
     #[TestDox('Deve retornar vazio para ano inválido')]
     public function testGenerateInvoicesInvalidYear(): void
     {
-        $response = $this->httpClient->get('/generate-invoices/1/1/accrual');
+        $response = $this->httpClient->post('/generate-invoices',[
+            'json' => [
+                'month' => 1,
+                'year' => 0,
+                'type' => 'accrual',
+            ],
+        ]);
 
         $this->assertEquals(200, $response->getStatusCode());
         $invoices = json_decode($response->getBody()->getContents(), true);

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Infra\Repository;
 
-use App\Entity\Contract as ContractEntity;
+use App\Infra\Entity\Contract as ContractEntity;
 use Doctrine\ORM\EntityManager;
 
 class ContractRepository

@@ -2,7 +2,7 @@
 
 namespace AppTest\Entity;
 
-use App\Entity\Invoice;
+use App\Infra\Entity\Invoice;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;

@@ -1,10 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Application\UseCase;
 
+use App\Application\Presenter\PresenterInterface;
 use App\Domain\Collection\ContractCollectionFactory;
 use App\Domain\Contract;
 use App\Domain\Invoice;
+use App\Domain\InvoiceGenerationFactory;
+use App\Infra\Repository\ContractRepository;
 
 class GenerateInvoices
 {

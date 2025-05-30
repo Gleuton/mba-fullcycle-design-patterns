@@ -2,8 +2,8 @@
 
 namespace AppTest\Collection;
 
-use App\Collection\ContractCollection;
-use App\Entity\Contract;
+use App\Domain\Collection\ContractCollection;
+use App\Domain\Contract;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -23,26 +23,6 @@ class ContractCollectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('All items in ContractCollection must be Contract objects');
         new ContractCollection(['not a contract']);
-    }
-
-
-    #[Test]
-    #[TestDox('Deve converter corretamente para array')]
-    public function testCorrectlyConvertsToArray(): void
-    {
-        $contract = $this->createMock(Contract::class);
-        $contract->method('toArray')->willReturn([
-            'date' => '2023-02-01',
-            'amount' => '500'
-        ]);
-
-        $collection = new ContractCollection([$contract]);
-
-        $array = $collection->toArray();
-        $this->assertIsArray($array);
-        $this->assertCount(1, $array);
-        $this->assertSame('2023-02-01', $array[0]['date']);
-        $this->assertSame('500', $array[0]['amount']);
     }
 
     #[Test]

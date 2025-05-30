@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Infra\Entity;
+namespace App\Domain;
 
 use DateTimeInterface;
 
 class Invoice
 {
-    public function __construct(private DateTimeInterface $date, private float $amount)
-    {
+    public function __construct(
+        private readonly DateTimeInterface $date,
+        private readonly float $amount,
+    ) {
     }
 
     public function getAmount(): float

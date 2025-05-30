@@ -3,7 +3,7 @@
 namespace AppTest\Action;
 
 use App\Action\ListInvoicesAction;
-use App\GenerateInvoices;
+use App\Application\UseCase\GenerateInvoices;
 use Laminas\Diactoros\Response\JsonResponse;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -35,12 +35,12 @@ class ListInvoicesActionTest extends TestCase
             ->expects($this->once())
             ->method('generateInvoice')
             ->with(3, 2023, 'accrual')
-            ->willReturn($invoices);
+            ->willReturn(new JsonResponse($invoices));
 
         $request = $this->createMock(ServerRequestInterface::class);
         $handler = $this->createMock(RequestHandlerInterface::class);
 
-        $request->method('getAttributes')->willReturn([
+        $request->method('getParsedBody')->willReturn([
             'month' => 3,
             'year' => 2023,
             'type' => 'accrual'
@@ -60,12 +60,12 @@ class ListInvoicesActionTest extends TestCase
         $this->generateInvoices
             ->expects($this->once())
             ->method('generateInvoice')
-            ->willReturn([]);
+            ->willReturn(new JsonResponse([]));
 
         $request = $this->createMock(ServerRequestInterface::class);
         $handler = $this->createMock(RequestHandlerInterface::class);
 
-        $request->method('getAttributes')->willReturn([
+        $request->method('getParsedBody')->willReturn([
             'month' => 3,
             'year' => 2023,
             'type' => 'accrual'

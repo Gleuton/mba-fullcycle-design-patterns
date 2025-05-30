@@ -2,8 +2,8 @@
 
 namespace AppTest\Entity;
 
-use App\Entity\Contract;
-use App\Entity\Payment;
+use App\Infra\Entity\Contract;
+use App\Infra\Entity\Payment;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;

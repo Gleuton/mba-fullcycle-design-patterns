@@ -2,9 +2,8 @@
 
 namespace AppTest\Entity;
 
-use App\Entity\Contract;
-use App\Entity\Payment;
-use DateTimeImmutable;
+use App\Infra\Entity\Contract;
+use App\Infra\Entity\Payment;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;

@@ -3,10 +3,12 @@
 namespace AppTest\Functional;
 
 use App\Action\ListInvoicesAction;
-use App\ContractRepository;
-use App\Entity\Contract;
-use App\Entity\Payment;
-use App\GenerateInvoices;
+use App\Application\Usecase\GenerateInvoices;
+use App\Domain\Collection\ContractCollectionFactory;
+use App\Domain\InvoiceGenerationFactory;
+use App\Infra\Entity\Contract;
+use App\Infra\Entity\Payment;
+use App\Infra\Repository\ContractRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -24,7 +26,10 @@ class ListInvoicesActionFunctionalTest extends TestCase
     {
         $entityManager = $this->createMock(EntityManager::class);
         $contractRepository = new ContractRepository($entityManager);
-        $generateInvoices = new GenerateInvoices($contractRepository);
+
+        $collectionFactory = new ContractCollectionFactory();
+        $invoiceGenerationFactory =new InvoiceGenerationFactory();
+        $generateInvoices = new GenerateInvoices($contractRepository, $collectionFactory, $invoiceGenerationFactory);
         $this->action = new ListInvoicesAction($generateInvoices);
         
         $doctrineRepository = $this->createMock(EntityRepository::class);
@@ -62,15 +67,23 @@ class ListInvoicesActionFunctionalTest extends TestCase
     #[TestDox('Deve processar uma requisição HTTP e retornar faturas no formato JSON')]
     public function testProcessHttpRequest(): void
     {
+        $body = [
+            'month' => 3,
+            'year' => 2023,
+            'type' => 'cash',
+        ];
+
         $request = new ServerRequest(
-            [],
-            [],
-            '/invoices',
-            'GET'
+            serverParams: [],
+            uploadedFiles: [],
+            uri: '/invoices',
+            method: 'POST',
+            body: 'php://input',
+            headers: ['Content-Type' => 'application/json'],
+            cookieParams: [],
+            queryParams: [],
+            parsedBody: $body
         );
-        $request = $request->withAttribute('month', 3);
-        $request = $request->withAttribute('year', 2023);
-        $request = $request->withAttribute('type', 'cash');
 
         $response = $this->action->process(
             $request,

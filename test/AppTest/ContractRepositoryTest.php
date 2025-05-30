@@ -2,10 +2,8 @@
 
 namespace AppTest;
 
-use App\Collection\ContractCollection;
-use App\Collection\ContractCollectionInterface;
-use App\ContractRepository;
-use App\Entity\Contract;
+use App\Infra\Entity\Contract;
+use App\Infra\Repository\ContractRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\Attributes\Test;
@@ -14,22 +12,20 @@ use PHPUnit\Framework\TestCase;
 
 class ContractRepositoryTest extends TestCase
 {
-    private EntityManager $entityManager;
     private EntityRepository $doctrineRepository;
     private ContractRepository $repository;
     
     protected function setUp(): void
     {
-        $this->entityManager = $this->createMock(EntityManager::class);
+        $entityManager = $this->createMock(EntityManager::class);
         $this->doctrineRepository = $this->createMock(EntityRepository::class);
         
-        $this->entityManager
-            ->expects($this->any())
+        $entityManager
             ->method('getRepository')
             ->with(Contract::class)
             ->willReturn($this->doctrineRepository);
             
-        $this->repository = new ContractRepository($this->entityManager);
+        $this->repository = new ContractRepository($entityManager);
     }
     
     #[Test]
@@ -47,8 +43,7 @@ class ContractRepositoryTest extends TestCase
             ->willReturn($contracts);
         
         $result = $this->repository->list();
-        
-        $this->assertInstanceOf(ContractCollectionInterface::class, $result);
+
         $this->assertCount(2, $result);
     }
     
@@ -62,8 +57,7 @@ class ContractRepositoryTest extends TestCase
             ->willReturn([]);
         
         $result = $this->repository->list();
-        
-        $this->assertInstanceOf(ContractCollectionInterface::class, $result);
-        $this->assertCount(0, $result);
+
+        $this->assertEmpty($result);
     }
 }
