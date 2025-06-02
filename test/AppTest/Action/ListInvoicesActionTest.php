@@ -33,7 +33,7 @@ class ListInvoicesActionTest extends TestCase
 
         $this->generateInvoices
             ->expects($this->once())
-            ->method('execute')
+            ->method('generateInvoice')
             ->with(3, 2023, 'accrual')
             ->willReturn(new JsonResponse($invoices));
 
@@ -59,7 +59,7 @@ class ListInvoicesActionTest extends TestCase
     {
         $this->generateInvoices
             ->expects($this->once())
-            ->method('execute')
+            ->method('generateInvoice')
             ->willReturn(new JsonResponse([]));
 
         $request = $this->createMock(ServerRequestInterface::class);
