@@ -82,7 +82,7 @@ class GenerateInvoicesTest extends TestCase
 
         $presenter->expects($this->once())->method('present')->with([$expectedOutput])->willReturn([$expectedOutput]);
 
-        $output = $generateInvoice->generateInvoice((int)$input['month'], (int)$input['year'], $input['type'], $presenter);
+        $output = $generateInvoice->execute((int)$input['month'], (int)$input['year'], $input['type'], $presenter);
         Assert::assertSame($expectedOutput['date'], $output[0]['date']);
         Assert::assertSame($expectedOutput['amount'], $output[0]['amount']);
     }
@@ -133,7 +133,7 @@ class GenerateInvoicesTest extends TestCase
             $this->invoiceGenerationFactory
         );
 
-        $output = $generateInvoice->generateInvoice(
+        $output = $generateInvoice->execute(
             (int)$input['month'],
             (int)$input['year'],
             $input['type'],

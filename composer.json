@@ -38,6 +38,7 @@
         "mezzio/mezzio": "^3.20.1",
         "mezzio/mezzio-fastroute": "^3.11.0",
         "mezzio/mezzio-helpers": "^5.17",
+        "monolog/monolog": "^3.9",
         "ramsey/uuid": "^4.7",
         "symfony/cache": "^6.4",
         "vlucas/phpdotenv": "^5.6"

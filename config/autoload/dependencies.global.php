@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Application\UseCase\GenerateInvoicesFactory;
+use App\Application\UseCase\GenerateInvoicesInterface;
+use App\Infra\Logger\LoggerFactory;
+use Psr\Log\LoggerInterface;
+
 return [
     // Provides application-wide services.
     // We recommend using fully-qualified class names whenever possible as
@@ -20,7 +25,8 @@ return [
         ],
         // Use 'factories' for services provided by callbacks/factory classes.
         'factories' => [
-            // Fully\Qualified\ClassName::class => Fully\Qualified\FactoryName::class,
+            LoggerInterface::class => LoggerFactory::class,
+            GenerateInvoicesInterface::class => GenerateInvoicesFactory::class,
         ],
     ],
 ];

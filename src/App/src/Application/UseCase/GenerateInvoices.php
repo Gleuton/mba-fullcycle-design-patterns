@@ -9,7 +9,7 @@ use App\Domain\Invoice;
 use App\Domain\InvoiceGenerationFactory;
 use App\Infra\Repository\ContractRepository;
 
-class GenerateInvoices
+class GenerateInvoices implements GenerateInvoicesInterface
 {
     public function __construct(
         private ContractRepository $contractRepository,
