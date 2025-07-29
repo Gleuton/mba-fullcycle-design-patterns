@@ -2,7 +2,7 @@
 
 namespace AppTest\Functional;
 
-use App\Action\ListInvoicesAction;
+use App\Action\GenerateInvoiceListInvoicesAction;
 use App\Application\Usecase\GenerateInvoices;
 use App\Domain\Collection\ContractCollectionFactory;
 use App\Domain\InvoiceGenerationFactory;
@@ -20,7 +20,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ListInvoicesActionFunctionalTest extends TestCase
 {
-    private ListInvoicesAction $action;
+    private GenerateInvoiceListInvoicesAction $action;
     
     protected function setUp(): void
     {
@@ -30,7 +30,7 @@ class ListInvoicesActionFunctionalTest extends TestCase
         $collectionFactory = new ContractCollectionFactory();
         $invoiceGenerationFactory =new InvoiceGenerationFactory();
         $generateInvoices = new GenerateInvoices($contractRepository, $collectionFactory, $invoiceGenerationFactory);
-        $this->action = new ListInvoicesAction($generateInvoices);
+        $this->action = new GenerateInvoiceListInvoicesAction($generateInvoices);
         
         $doctrineRepository = $this->createMock(EntityRepository::class);
         $entityManager

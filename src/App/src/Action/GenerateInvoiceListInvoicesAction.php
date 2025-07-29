@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-readonly class ListInvoicesAction implements MiddlewareInterface
+readonly class GenerateInvoiceListInvoicesAction implements MiddlewareInterface
 {
     public function __construct(private GenerateInvoicesInterface $generateInvoices)
     {

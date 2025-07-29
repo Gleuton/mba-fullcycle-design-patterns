@@ -2,7 +2,7 @@
 
 namespace AppTest\Action;
 
-use App\Action\ListInvoicesAction;
+use App\Action\GenerateInvoiceListInvoicesAction;
 use App\Application\UseCase\GenerateInvoices;
 use Laminas\Diactoros\Response\JsonResponse;
 use PHPUnit\Framework\Attributes\Test;
@@ -14,12 +14,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ListInvoicesActionTest extends TestCase
 {
     private GenerateInvoices $generateInvoices;
-    private ListInvoicesAction $action;
+    private GenerateInvoiceListInvoicesAction $action;
 
     protected function setUp(): void
     {
         $this->generateInvoices = $this->createMock(GenerateInvoices::class);
-        $this->action = new ListInvoicesAction($this->generateInvoices);
+        $this->action = new GenerateInvoiceListInvoicesAction($this->generateInvoices);
     }
 
     #[Test]

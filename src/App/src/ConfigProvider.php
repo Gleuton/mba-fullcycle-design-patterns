@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 
-use App\Action\ListInvoicesAction;
+use App\Action\GenerateInvoiceListInvoicesAction;
 use Doctrine\ORM\EntityManager;
 
 class ConfigProvider
