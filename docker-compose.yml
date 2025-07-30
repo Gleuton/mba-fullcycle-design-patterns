@@ -7,6 +7,7 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker/nginx:/etc/nginx/conf.d
+      - ./.docker/start-nginx.sh:/start-nginx.sh
     depends_on:
       - mba-patters-php
     networks:
